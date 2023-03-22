@@ -10,7 +10,7 @@ CROS_WORKON_REPO="https://github.com"
 if [[ "${PV}" == 9999 ]]; then
 	KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 else
-	CROS_WORKON_COMMIT="93b80ace22806bae4ab521f16fa9f4d1d3172e77" # flatcar-master
+	CROS_WORKON_COMMIT="913cefb3ad59049c20bc921aeb90b59ff4b2809c" # krnowak/sync-azure-udev-rules
 	KEYWORDS="amd64 arm arm64 x86"
 fi
 
