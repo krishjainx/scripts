@@ -88,7 +88,6 @@ if [ "${CIA_TESTSCRIPT}" = "azure_gpu.sh" ] ; then
         "${azure_instance_type}" \
         "${CIA_TAPFILE}" \
         "cl.misc.nvidia" \
-        "${@}"
 else
     run_kola_tests_on_instances \
         "${azure_instance_type}" \

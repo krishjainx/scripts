@@ -60,6 +60,7 @@ function packages_build() {
 # --
 
 function _packages_build_impl() {
+    set -x
     local arch="$1"
 
     source ci-automation/ci_automation_common.sh
@@ -134,5 +135,6 @@ function _packages_build_impl() {
         "${torcx_tmp}/torcx/${arch}-usr/latest/torcx_manifest.json"*
     copy_to_buildcache "images/${arch}/${vernum}/torcx" \
         "${torcx_tmp}/torcx/pkgs/${arch}-usr/docker/"*/*.torcx.tgz*
+    set +x
 }
 # --
