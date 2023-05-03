@@ -14,7 +14,11 @@ source ci-automation/vendor_test.sh
 
 board="${CIA_ARCH}-usr"
 basename="ci-${CIA_VERNUM//+/-}-${CIA_ARCH}"
-azure_instance_type_var="AZURE_${CIA_ARCH}_MACHINE_SIZE"
+if [ "${CIA_TESTSCRIPT}" = "azure_gpu.sh" ] ; then
+    azure_instance_type_var="AZURE_GPU_amd64_MACHINE_SIZE"
+else
+    azure_instance_type_var="AZURE_${CIA_ARCH}_MACHINE_SIZE"
+fi
 azure_instance_type="${!azure_instance_type_var}"
 azure_vnet_subnet_name="jenkins-vnet-${AZURE_LOCATION}"
 
@@ -79,12 +83,20 @@ if [[ "${CIA_ARCH}" = 'amd64' ]]; then
     other_instance_types+=('V1')
 fi
 
-run_kola_tests_on_instances \
-    "${azure_instance_type}" \
-    "${CIA_TAPFILE}" \
-    "${CIA_FIRST_RUN}" \
-    "${other_instance_types[@]}" \
-    '--' \
-    'cl.internet' \
-    '--' \
-    "${@}"
+if [ "${CIA_TESTSCRIPT}" = "azure_gpu.sh" ] ; then
+    run_kola_tests \
+        "${azure_instance_type}" \
+        "${CIA_TAPFILE}" \
+        "cl.misc.nvidia" \
+        "${@}"
+else
+    run_kola_tests_on_instances \
+        "${azure_instance_type}" \
+        "${CIA_TAPFILE}" \
+        "${CIA_FIRST_RUN}" \
+        "${other_instance_types[@]}" \
+        '--' \
+        'cl.internet' \
+        '--' \
+        "${@}"
+fi
