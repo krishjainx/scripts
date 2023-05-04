@@ -21,3 +21,6 @@
 # Python 3.11 is stable in portage-stable, so avoid picking it
 # up. Drop this when we switch to it.
 >=dev-lang/python-3.11
+
+# Pin the version for iproute corresponding to the kernel version
+=sys-apps/iproute2-5.15.0
