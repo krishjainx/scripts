@@ -138,14 +138,14 @@ IMG_qemu_OEM_SYSEXT=oem-qemu
 IMG_qemu_uefi_DISK_FORMAT=qcow2
 IMG_qemu_uefi_DISK_LAYOUT=vm
 IMG_qemu_uefi_CONF_FORMAT=qemu_uefi
-IMG_qemu_uefi_USE=qemu
+IMG_qemu_uefi_OEM_USE=qemu
 IMG_qemu_uefi_OEM_PACKAGE=common-oem-files
 IMG_qemu_uefi_OEM_SYSEXT=oem-qemu
 
 IMG_qemu_uefi_secure_DISK_FORMAT=qcow2
 IMG_qemu_uefi_secure_DISK_LAYOUT=vm
 IMG_qemu_uefi_secure_CONF_FORMAT=qemu_uefi_secure
-IMG_qemu_uefi_secure_USE=qemu
+IMG_qemu_uefi_secure_OEM_USE=qemu
 IMG_qemu_uefi_secure_OEM_PACKAGE=common-oem-files
 IMG_qemu_uefi_secure_OEM_SYSEXT=oem-qemu
 
