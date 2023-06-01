@@ -556,7 +556,7 @@ install_oem_sysext() {
         --prod_pkgdb_path="${VM_SRC_PKGDB}" \
         "${oem_sysext}"
 
-    local installed_sysext_oem_dir='/usr/share/oem/sysext'
+    local installed_sysext_oem_dir='/oem/sysext'
     local installed_sysext_file_prefix="${oem_sysext}-${FLATCAR_VERSION}"
     local installed_sysext_filename="${installed_sysext_file_prefix}.raw"
     local installed_sysext_abspath="${installed_sysext_oem_dir}/${installed_sysext_filename}"
