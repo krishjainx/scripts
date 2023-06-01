@@ -82,7 +82,7 @@ src_compile() {
 }
 
 src_install() {
-    insinto "/usr/share/oem"
+    insinto "/oem"
     doins "${T}/grub.cfg"
     doins "${T}/oem-release"
 }
