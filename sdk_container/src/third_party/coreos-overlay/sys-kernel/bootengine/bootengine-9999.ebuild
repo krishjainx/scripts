@@ -10,7 +10,7 @@ CROS_WORKON_REPO="https://github.com"
 if [[ "${PV}" == 9999 ]]; then
 	KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 else
-	CROS_WORKON_COMMIT="65e9cb37deab44f2e768f3af714bdf28fb20bb15" # flatcar-master
+	CROS_WORKON_COMMIT="2a2b0f5217e72eeb22469a27734470cf5550be25" # krishjainx/add-clevis-krish
 	KEYWORDS="amd64 arm arm64 x86"
 fi
 
@@ -41,7 +41,6 @@ src_install() {
 		"${D}"/usr/lib/dracut/modules.d/99setup-root/initrd-setup-root \
 		"${D}"/usr/lib/dracut/modules.d/99setup-root/initrd-setup-root-after-ignition \
 		"${D}"/usr/lib/dracut/modules.d/99setup-root/gpg-agent-wrapper \
-		"${D}"/usr/lib/dracut/modules.d/30ignition/coreos-metadata-wrapper \
-		"${D}"/usr/lib/dracut/modules.d/30ignition/ignition-wrapper \
+		"${D}"/usr/lib/dracut/modules.d/30ignition/*-wrapper \
 		|| die chmod
 }
