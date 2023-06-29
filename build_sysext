@@ -91,7 +91,9 @@ fi
 trap cleanup EXIT
 
 ARCH=$(_get_sysext_arch "${FLAGS_board}") 
-
+if [[ -z "${FLAGS_squashfs_base}" ]]; then
+  FLAGS_squashfs_base="${BUILD_DIR}/flatcar_production_image_sysext.squashfs"
+fi
 cleanup
 
 mkdir "${BUILD_DIR}/fs-root"
