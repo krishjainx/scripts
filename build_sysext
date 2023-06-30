@@ -14,33 +14,36 @@ SCRIPT_ROOT=$(dirname "$(readlink -f "$0")")
 assert_inside_chroot
 assert_root_user
 
-# All these are used to set up the 'BUILD_DIR' variable
 DEFINE_string board "${DEFAULT_BOARD}" \
   "The board to build a sysext for."
-DEFINE_string output_root "${DEFAULT_BUILD_ROOT}/images" \
-  "Directory in which to place sysext images and intermediate files"
-DEFINE_string group "developer" \
-  "The normal image build group"
-DEFINE_integer build_attempt 1 \
-  "The build attempt for this build."
-
+DEFINE_string build_dir '' \
+  "Directory used for building the sysext image, should exist, but be empty"
 DEFINE_string metapkgs '' \
-  "Comma-separated list of meta-packages to build and install into sysext image"
+  "Comma-separated list of meta-packages to build from source and install into sysext image"
 DEFINE_string manglefs_script '' \
   "A path to executable that will customize the rootfs of the sysext image."
 DEFINE_string squashfs_base '' \
   "The path to the squashfs base image."
 
-FLAGS_HELP="USAGE: build_sysext [flags] [sysext name] [packages to build].
-This script is used to build a Flatcar sysext. 
+FLAGS_HELP="USAGE: build_sysext [flags] [sysext name] [binary packages to install into image].
+
+This script is used to build a Flatcar sysext image.
 
 Examples:
 
-Build a systemd-sysext image named command-extras with package_1, package_2 and package_3 for amd64:
-sudo build_sysext --board=amd64-usr command-extras package_1 package_2 package_3
+Builds a sysext image named interpreters in the images
+directory with dev-lang/python and dev-lang/perl packages for amd64:
 
-Builds a systemd-sysext image named command-extras with package_1, package_2 and package_3 for arm64:
-sudo build_sysext --board=arm64-usr command-extras package_1 package_2 package_3
+sudo build_sysext \
+     --board=amd64-usr \
+     --build_dir=images \
+     interpreters dev-lang/python dev-lang/perl
+
+Builds a sysext image named oem-azure with metapackage coreos-base/oem-azure for arm64:
+sudo build_sysext \
+     --board=arm64-usr \
+     --metapkgs=coreos-base/oem-azure
+     oem-azure
 
 "
 
@@ -51,9 +54,13 @@ FLAGS "$@" || exit 1
 
 eval set -- "${FLAGS_ARGV}"
 
-. "${BUILD_LIBRARY_DIR}/release_util.sh" || exit 1
 . "${BUILD_LIBRARY_DIR}/board_options.sh" || exit 1
-. "${BUILD_LIBRARY_DIR}/build_image_util.sh" || exit 1
+
+if [[ -z "${FLAGS_build_dir}" ]]; then
+  die "Need a build directory to be specified with a --build_dir option"
+fi
+
+BUILD_DIR=$(realpath "${FLAGS_build_dir}")
 
 # Architecture values are taken from systemd.unit(5).
 declare -A SYSEXT_ARCHES
@@ -64,14 +71,17 @@ declare -r SYSEXT_ARCHES
 
 # Usage: _get_sysext_arch board [board...]
 _get_sysext_arch() {
-    local board=${1}
-    if [[ ${#SYSEXT_ARCHES["${board}"]} -ne 0 ]]; then
-        echo "${SYSEXT_ARCHES["${board}"]}"
-    else
-        die "Unknown board '${board}'"
-    fi
+  local board=${1}
+  if [[ ${#SYSEXT_ARCHES["${board}"]} -ne 0 ]]; then
+    echo "${SYSEXT_ARCHES["${board}"]}"
+  else
+    die "Unknown board '${board}'"
+  fi
 }
 
+if [[ ${#} -lt 1 ]]; then
+  die 'Expected at least a parameter for sysext name'
+fi
 
 set -euo pipefail
 
@@ -83,14 +93,14 @@ cleanup() {
 SYSEXTNAME="${1-}"
 shift
 if [ -z "$SYSEXTNAME" ]; then
-    echo "Error: No sysext name passed"
-    show_help_if_requested -h
+  echo "Error: No sysext name passed"
+  show_help_if_requested -h
 fi
 
 # Set up trap to execute cleanup() on script exit
 trap cleanup EXIT
 
-ARCH=$(_get_sysext_arch "${FLAGS_board}") 
+ARCH=$(_get_sysext_arch "${FLAGS_board}")
 if [[ -z "${FLAGS_squashfs_base}" ]]; then
   FLAGS_squashfs_base="${BUILD_DIR}/flatcar_production_image_sysext.squashfs"
 fi
@@ -148,6 +158,11 @@ for entry in "${BUILD_DIR}/install-root"/*; do
 done
 mkdir -p "${BUILD_DIR}/install-root/usr/lib/extension-release.d"
 version_field="${VERSION_FIELD_OVERRIDE:-VERSION_ID=${FLATCAR_VERSION_ID}}"
-printf "ID=flatcar\n${version_field}\nARCHITECTURE=${ARCH}\n" >"${BUILD_DIR}/install-root/usr/lib/extension-release.d/extension-release.${SYSEXTNAME}"
+all_fields=(
+  'ID=flatcar'
+  "${version_field}"
+  "ARCHITECTURE=${ARCH}"
+)
+printf '%s\n' "${all_fields[@]}" >"${BUILD_DIR}/install-root/usr/lib/extension-release.d/extension-release.${SYSEXTNAME}"
 mksquashfs "${BUILD_DIR}/install-root" "${BUILD_DIR}/${SYSEXTNAME}.raw"
 rm -rf "${BUILD_DIR}"/{fs-root,install-root,workdir}
