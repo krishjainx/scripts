@@ -558,15 +558,34 @@ install_oem_sysext() {
     # 'version_id' to "${FLATCAR_VERSION_ID}" when we implement updating OEM sysexts
     local version='initial'
     local version_id='initial'
-    local build_oem_sysext_flags=(
+    #local build_oem_sysext_flags=(
+    #    --board="${BOARD}"
+    #    --build_dir="${built_sysext_dir}"
+    #    --prod_image_path="${VM_SRC_IMG}"
+    #    --prod_pkgdb_path="${VM_SRC_PKGDB}"
+    #    --version_id="${version_id}"
+    #)
+    local metapkg="coreos-base/${oem_sysext}"
+    local build_sysext_flags=(
         --board="${BOARD}"
         --build_dir="${built_sysext_dir}"
-        --prod_image_path="${VM_SRC_IMG}"
-        --prod_pkgdb_path="${VM_SRC_PKGDB}"
-        --version_id="${version_id}"
+        --squashfs_base="${VM_SRC_SYSEXT_IMG}"
+        --metapkgs="${metapkg}"
+    )
+    local overlay_path mangle_fs
+    overlay_path=$(portageq get_repo_path / coreos)
+    mangle_fs="${overlay_path}/${metapkg}/files/manglefs.sh"
+    if [[ -x "${mangle_fs}" ]]; then
+        build_sysext_flags+=(
+            --manglefs_script="${mangle_fs}"
+        )
+    fi
+    build_sysext_env=(
+        VERSION_FIELD_OVERRIDE='SYSEXT_LEVEL=1.0'
     )
 
-    "${SCRIPT_ROOT}/build_oem_sysext" "${build_oem_sysext_flags[@]}" "${oem_sysext}"
+    sudo "${build_sysext_env[@]}" "${SCRIPT_ROOT}/build_sysext" "${build_sysext_flags[@]}" "${oem_sysext}"
+    #"${SCRIPT_ROOT}/build_oem_sysext" "${build_oem_sysext_flags[@]}" "${oem_sysext}"
 
     local installed_sysext_oem_dir='/oem/sysext'
     local installed_sysext_file_prefix="${oem_sysext}-${version}"
