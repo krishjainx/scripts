@@ -107,9 +107,7 @@ create_prod_image() {
   sudo rsync -a --delete  "${BUILD_DIR}/configroot/etc/portage" "${BUILD_DIR}/root_fs_dir2/etc"
   sudo mksquashfs "${BUILD_DIR}/root_fs_dir2"  "${BUILD_DIR}/${image_sysext_base}" -noappend
   sudo rm -rf "${BUILD_DIR}/root_fs_dir2"
-  # Run build_sysext script to create python sysext so we can see it from GitHub actions CI workflow; TO REMOVE
-  sudo "$(dirname ${BASH_SOURCE[0]})/../build_sysext" --board="${BOARD}" --group="${FLAGS_group}" --output_root="${FLAGS_output_root}" --build_attempt="${FLAGS_build_attempt}" --squashfs_base="${BUILD_DIR}/${image_sysext_base}" python-sysext python
-  
+
   # clean-ups of things we do not need
   sudo rm ${root_fs_dir}/etc/csh.env
   sudo rm -rf ${root_fs_dir}/etc/env.d
