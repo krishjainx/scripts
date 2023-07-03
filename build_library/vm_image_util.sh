@@ -584,6 +584,7 @@ install_oem_sysext() {
         VERSION_FIELD_OVERRIDE='SYSEXT_LEVEL=1.0'
     )
 
+    mkdir -p "${built_sysext_dir}"
     sudo "${build_sysext_env[@]}" "${SCRIPT_ROOT}/build_sysext" "${build_sysext_flags[@]}" "${oem_sysext}"
     #"${SCRIPT_ROOT}/build_oem_sysext" "${build_oem_sysext_flags[@]}" "${oem_sysext}"
 
