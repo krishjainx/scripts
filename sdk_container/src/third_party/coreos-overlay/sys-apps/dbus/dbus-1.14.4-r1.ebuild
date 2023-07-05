@@ -29,7 +29,7 @@ BDEPEND="
 	app-text/xmlto
 	app-text/docbook-xml-dtd:4.4
 	sys-devel/autoconf-archive
-	virtual/pkgconfig
+	virtual/pkgconfigw
 	doc? ( app-doc/doxygen )
 "
 COMMON_DEPEND="
