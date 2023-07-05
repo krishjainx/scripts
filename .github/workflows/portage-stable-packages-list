@@ -89,6 +89,7 @@ app-crypt/adcli
 app-crypt/libmd
 app-crypt/mit-krb5
 app-crypt/pinentry
+app-crypt/rhash
 
 app-editors/nano
 app-editors/vim
@@ -425,6 +426,7 @@ sys-libs/binutils-libs
 sys-libs/libcap
 sys-libs/libcap-ng
 sys-libs/libseccomp
+sys-libs/ncurses
 sys-libs/readline
 sys-libs/zlib
 
@@ -432,6 +434,7 @@ sys-process/tini
 
 virtual/libcrypt
 virtual/libelf
+virtual/os-headers
 virtual/perl-Carp
 virtual/perl-Exporter
 virtual/perl-ExtUtils-MakeMaker
