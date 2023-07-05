@@ -432,6 +432,7 @@ sys-libs/zlib
 
 sys-process/tini
 
+virtual/libc
 virtual/libcrypt
 virtual/libelf
 virtual/os-headers
