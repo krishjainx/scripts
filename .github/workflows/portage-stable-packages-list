@@ -425,6 +425,7 @@ sys-libs/binutils-libs
 sys-libs/libcap
 sys-libs/libcap-ng
 sys-libs/libseccomp
+sys-libs/ncurses
 sys-libs/readline
 sys-libs/zlib
 
