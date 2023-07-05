@@ -4,7 +4,7 @@
 EAPI="7"
 
 # flatcar changes
-PYTHON_COMPAT=( python3_{8,9,10} )
+PYTHON_COMPAT=( python3_{8,9,10,11} )
 PYTHON_REQ_USE="xml"
 TMPFILES_OPTIONAL=1
 inherit systemd tmpfiles python-any-r1
