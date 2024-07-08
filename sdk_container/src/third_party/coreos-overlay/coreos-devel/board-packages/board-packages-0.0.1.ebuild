@@ -40,4 +40,5 @@ RDEPEND="
 	net-misc/passt
 	dev-lang/python
 	dev-python/pip
+	app-admin/sysstat
 	"
