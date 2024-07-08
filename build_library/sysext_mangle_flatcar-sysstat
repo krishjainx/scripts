@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -euo pipefail
+
+rootfs="${1}"
+
+pushd "${rootfs}"
+
+rm -rf ./usr/{lib/debug,share/SLSA}
+
+mkdir -p ./usr/share/sysstat/etc
+
+# cp -a ./etc/{sysstat.ioconf,sysstat} ./usr/share/sysstat/etc/
+
+popd
